@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MIP 014 Offchain Lab</title>
+  <meta name="description" content="Linux style offchain simulator for MIP 014, built for Vercel." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="desktop-grid"></div>
+  <header class="topbar">
+  <a class="brand" href="https://x.com/Idolly_AI" target="_blank" rel="noreferrer">
+    <span class="dot"></span>
+    <span>IdollyAI</span>
+  </a>
+  <div class="topbar-right">
+    <span id="clock">00:00:00</span>
+    <span class="pill">IdollyAI</span>
+    <span class="pill solana-pill">
+      <svg viewBox="0 0 397 311" aria-hidden="true" class="solana-logo" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="21.144%" y1="68.472%" x2="77.684%" y2="24.389%">
+            <stop offset="0%" stop-color="#00FFA3"/>
+            <stop offset="100%" stop-color="#DC1FFF"/>
+          </linearGradient>
+          <linearGradient id="g2" x1="21.144%" y1="68.472%" x2="77.684%" y2="24.389%">
+            <stop offset="0%" stop-color="#00FFA3"/>
+            <stop offset="100%" stop-color="#DC1FFF"/>
+          </linearGradient>
+          <linearGradient id="g3" x1="21.144%" y1="68.472%" x2="77.684%" y2="24.389%">
+            <stop offset="0%" stop-color="#00FFA3"/>
+            <stop offset="100%" stop-color="#DC1FFF"/>
+          </linearGradient>
+        </defs>
+        <path d="M64 238c3-3 7-5 11-5h308c6 0 10 7 6 11l-61 61c-3 3-7 5-11 5H9c-6 0-10-7-6-11l61-61Z" fill="url(#g1)"/>
+        <path d="M64 5c3-3 7-5 11-5h308c6 0 10 7 6 11l-61 61c-3 3-7 5-11 5H9C3 77-1 70 3 66L64 5Z" fill="url(#g2)"/>
+        <path d="M333 121c-3-3-7-5-11-5H14c-6 0-10 7-6 11l61 61c3 3 7 5 11 5h308c6 0 10-7 6-11l-61-61Z" fill="url(#g3)"/>
+      </svg>
+      Solana
+    </span>
+  </div>
+</header>
+
+  <main class="app-shell">
+    <aside class="sidebar panel">
+      <div class="panel-title">Protocol control</div>
+      <button class="side-btn" data-cmd="help">help</button>
+      <button class="side-btn" data-cmd="mint-agent idol">mint agent</button>
+      <button class="side-btn" data-cmd="register-identity idol">register identity</button>
+      <button class="side-btn" data-cmd="register-executive wallet_01">register executive</button>
+      <button class="side-btn" data-cmd="delegate idol wallet_01 execute,transfer">delegate execution</button>
+      <button class="side-btn" data-cmd="execute idol swap 25">execute action</button>
+      <button class="side-btn" data-cmd="inspect idol">inspect agent</button>
+      <button class="side-btn danger" data-cmd="revoke idol">revoke delegation</button>
+      <button class="side-btn muted" data-cmd="reset">reset lab</button>
+
+      <div class="mini-card">
+        <div class="mini-label">Mode</div>
+        <div class="mini-value">Offchain demonstration</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-label">State</div>
+        <div class="mini-value" id="state-summary">0 agents, 0 executives, 0 delegations</div>
+      </div>
+    </aside>
+
+    <section class="terminal panel">
+      <div class="window-bar">
+        <div class="window-dots"><span></span><span></span><span></span></div>
+        <div class="window-title">terminal  idolly@mip014:~</div>
+        <div class="window-meta">local simulator</div>
+      </div>
+      <div id="terminal" class="terminal-body" aria-live="polite"></div>
+      <form id="command-form" class="command-line" autocomplete="off">
+        <span class="prompt">idolly@mip014:~$</span>
+        <input id="command-input" type="text" spellcheck="false" placeholder="type help, mint-agent idol, inspect idol" />
+        <button type="submit">run</button>
+      </form>
+      <div class="quick-actions">
+        <button data-cmd="help">help</button>
+        <button data-cmd="mint-agent idol">mint</button>
+        <button data-cmd="delegate idol wallet_01 execute,transfer">delegate</button>
+        <button data-cmd="execute idol swap 25">execute</button>
+        <button data-cmd="replay">replay</button>
+      </div>
+    </section>
+
+    <section class="inspector panel">
+      <div class="panel-title">Live state</div>
+      <div class="inspector-group">
+        <div class="section-head">Agents</div>
+        <div id="agents" class="stack"></div>
+      </div>
+      <div class="inspector-group">
+        <div class="section-head">Executives</div>
+        <div id="executives" class="stack"></div>
+      </div>
+      <div class="inspector-group">
+        <div class="section-head">Delegations</div>
+        <div id="delegations" class="stack"></div>
+      </div>
+      <div class="inspector-group">
+        <div class="section-head">Transaction log</div>
+        <div id="txlog" class="stack slim"></div>
+      </div>
+    </section>
+  </main>
+
+  <section class="below-grid">
+    <div class="panel wide-panel">
+      <div class="panel-title">How MIP 014 works offchain</div>
+      <div class="steps-grid">
+        <article class="step-card">
+          <span>01</span>
+          <h3>Create an agent</h3>
+          <p>The simulator mints a local agent record and generates a deterministic looking identity address from the agent name.</p>
+        </article>
+        <article class="step-card">
+          <span>02</span>
+          <h3>Attach identity</h3>
+          <p>The registry marks the agent as active and attaches a plugin flag that behaves like an identity layer.</p>
+        </article>
+        <article class="step-card">
+          <span>03</span>
+          <h3>Assign an executive</h3>
+          <p>A wallet or operator becomes the allowed executor, which mirrors the delegation model in the proposal.</p>
+        </article>
+        <article class="step-card">
+          <span>04</span>
+          <h3>Simulate execution</h3>
+          <p>Actions are checked against permissions, then written into the local transaction log with fake hashes and outcomes.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="panel wide-panel code-panel">
+      <div class="panel-title">Protocol model</div>
+      <pre><code>agent → identityPDA → executive → permission check → execution log
+
+state is fully offchain,
+so the page can show how the flow works
+without touching a wallet or chain.</code></pre>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
