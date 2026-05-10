@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IdollyAI × MIP-014 · Knowledge Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sora:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void: #02030a;
+      --ink: #070b18;
+      --panel: #0c1124;
+      --border: #1a2545;
+      --cyan: #00f5e4;
+      --gold: #f5c400;
+      --pink: #ff3fa4;
+      --text: #c8d8f0;
+      --muted: #5a6e94;
+      --white: #eaf2ff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas background ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1060px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(2,3,10,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: .12em;
+      color: var(--cyan);
+      text-shadow: 0 0 18px rgba(0,245,228,.5);
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--cyan);
+      border-radius: 999px;
+      padding: 5px 18px;
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 36px;
+      animation: fadeSlideUp .9s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulse 2s infinite;
+    }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1.05;
+      letter-spacing: -.01em;
+      color: var(--white);
+      animation: fadeSlideUp 1s ease .1s both;
+    }
+    h1 .accent-cyan { color: var(--cyan); text-shadow: 0 0 28px rgba(0,245,228,.45); }
+    h1 .accent-gold { color: var(--gold); text-shadow: 0 0 28px rgba(245,196,0,.4); }
+
+    .hero-sub {
+      max-width: 580px;
+      margin: 28px auto 0;
+      font-size: 1.05rem;
+      color: var(--muted);
+      animation: fadeSlideUp 1s ease .2s both;
+    }
+
+    .hero-cta {
+      display: flex; gap: 14px; justify-content: center;
+      margin-top: 48px;
+      animation: fadeSlideUp 1s ease .32s both;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 32px;
+      border-radius: 6px;
+      font-family: 'Orbitron', monospace;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .btn-primary {
+      background: var(--cyan);
+      color: var(--void);
+      box-shadow: 0 0 28px rgba(0,245,228,.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 44px rgba(0,245,228,.55); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+    }
+    .btn-ghost:hover { background: rgba(0,245,228,.07); transform: translateY(-2px); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ── SECTION TITLES ── */
+    section { padding: 100px 0; position: relative; z-index: 2; }
+
+    .section-label {
+      font-size: .68rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      color: var(--white);
+      line-height: 1.15;
+    }
+    h2 .g { color: var(--gold); }
+    h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    /* ── WHAT IS MIP-014 ── */
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-top: 56px;
+    }
+    @media (max-width: 700px) { .intro-grid { grid-template-columns: 1fr; } }
+
+    .intro-text p { color: var(--muted); margin-bottom: 18px; }
+    .intro-text p strong { color: var(--white); }
+
+    .passport-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .passport-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(0,245,228,.12), transparent 70%);
+      pointer-events: none;
+    }
+    .passport-card .card-chip {
+      width: 48px; height: 34px;
+      background: linear-gradient(135deg, var(--gold), #c89600);
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .passport-card .card-chip::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg, transparent 0px, transparent 6px, rgba(0,0,0,.18) 6px, rgba(0,0,0,.18) 7px
+      );
+    }
+    .passport-card h3 { font-size: .9rem; margin-bottom: 6px; color: var(--cyan); }
+    .passport-card .pid {
+      font-size: .68rem;
+      letter-spacing: .12em;
+      color: var(--muted);
+      font-family: 'Orbitron', monospace;
+      margin-bottom: 22px;
+    }
+    .id-row {
+      display: flex; justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 14px; margin-top: 14px;
+    }
+    .id-row .label { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+    .id-row .val { font-size: .82rem; color: var(--white); font-weight: 600; }
+
+    /* ── HOW IT WORKS ── */
+    #how { background: var(--ink); }
+
+    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 56px; }
+    .step {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 24px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .step.visible { opacity: 1; transform: translateY(0); }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      padding-top: 4px;
+    }
+    .step.active .step-num { color: var(--cyan); text-shadow: 0 0 18px rgba(0,245,228,.4); }
+    .step-content p { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+
+    /* ── PROGRAMS ── */
+    .prog-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 48px;
+    }
+    @media (max-width: 640px) { .prog-cards { grid-template-columns: 1fr; } }
+
+    .prog-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+    .prog-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .prog-card .tag {
+      display: inline-block;
+      font-size: .62rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    .tag-identity { background: rgba(0,245,228,.12); color: var(--cyan); }
+    .tag-tools { background: rgba(245,196,0,.12); color: var(--gold); }
+    .prog-card .addr {
+      font-family: 'Orbitron', monospace;
+      font-size: .62rem;
+      color: var(--muted);
+      word-break: break-all;
+      margin-top: 12px;
+      background: rgba(255,255,255,.03);
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    .prog-card p { color: var(--muted); font-size: .87rem; }
+
+    /* ── IDOLLY ── */
+    #idolly { background: var(--void); }
+
+    .idolly-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-top: 56px;
+    }
+    @media (max-width: 780px) { .idolly-grid { grid-template-columns: 1fr; } }
+
+    .feat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .5s ease, transform .5s ease, border-color .2s;
+    }
+    .feat-card.visible { opacity: 1; transform: translateY(0); }
+    .feat-card:hover { border-color: var(--pink); }
+    .feat-icon {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+    }
+    .feat-card p { color: var(--muted); font-size: .87rem; margin-top: 8px; }
+
+    /* ── DOLLIZ TOKEN ── */
+    #dolliz { background: var(--ink); }
+
+    .token-hero {
+      margin-top: 56px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 640px) { .token-hero { grid-template-columns: 1fr; } }
+    .token-hero::before {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(245,196,0,.1), transparent 70%);
+      pointer-events: none;
+    }
+    .token-symbol {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 5rem;
+      color: var(--gold);
+      text-shadow: 0 0 40px rgba(245,196,0,.4);
+      line-height: 1;
+    }
+    .token-name {
+      font-family: 'Orbitron', monospace;
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .token-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .stat-box .stat-label { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .stat-box .stat-val { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: var(--white); font-weight: 700; margin-top: 4px; }
+
+    /* ── CONNECTION ── */
+    #connection { background: var(--void); }
+    .conn-diagram {
+      margin-top: 56px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .conn-node {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 30px;
+      text-align: center;
+      min-width: 160px;
+    }
+    .conn-node .n-icon { font-size: 2rem; margin-bottom: 10px; }
+    .conn-node .n-label {
+      font-family: 'Orbitron', monospace;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .08em;
+    }
+    .conn-node .n-sub { font-size: .72rem; color: var(--muted); margin-top: 4px; }
+    .conn-arrow {
+      padding: 0 16px;
+      color: var(--cyan);
+      font-size: 1.4rem;
+    }
+    .conn-highlight { border-color: var(--cyan); box-shadow: 0 0 24px rgba(0,245,228,.12); }
+    .conn-gold { border-color: var(--gold); box-shadow: 0 0 24px rgba(245,196,0,.12); }
+
+    .conn-explainer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    @media (max-width: 640px) { .conn-explainer { grid-template-columns: 1fr; } }
+    .conn-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .conn-item h3 { font-size: .88rem; color: var(--cyan); }
+    .conn-item p { font-size: .87rem; color: var(--muted); margin-top: 8px; }
+
+    /* ── GLOSSARY ── */
+    #glossary { background: var(--ink); }
+    .glossary-list { margin-top: 48px; display: flex; flex-direction: column; gap: 0; }
+    .gterm {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 24px;
+      opacity: 0;
+      transform: translateX(-16px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .gterm.visible { opacity: 1; transform: translateX(0); }
+    @media (max-width: 600px) { .gterm { grid-template-columns: 1fr; } }
+    .gterm-word {
+      font-family: 'Orbitron', monospace;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+    .gterm-def { color: var(--muted); font-size: .9rem; }
+    .gterm-def strong { color: var(--white); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--cyan);
+      letter-spacing: .14em;
+      margin-bottom: 12px;
+    }
+    footer p { font-size: .78rem; color: var(--muted); }
+    footer a { color: var(--cyan); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* Scroll fade */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Hexagon grid decorative */
+    .hex-deco {
+      position: absolute;
+      right: -60px; top: 40px;
+      width: 260px; height: 260px;
+      opacity: .06;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">IDOLLY<span>AI</span> × MIP-014</div>
+  <ul class="nav-links">
+    <li><a href="#what">Protocol</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#idolly">IdollyAI</a></li>
+    <li><a href="#dolliz">$DOLLIZ</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Knowledge Hub · New Member Edition
+  </div>
+  <h1>
+    Meet the Onchain<br/>
+    <span class="accent-cyan">Agent Passport</span><br/>
+    Powering <span class="accent-gold">$DOLLIZ</span>
+  </h1>
+  <p class="hero-sub">
+    Metaplex MIP-014 gives AI agents a verifiable identity on Solana.
+    Here's everything you need to understand how IdollyAI is built on it.
+  </p>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="#what">Start Learning ↓</a>
+    <a class="btn btn-ghost" href="#dolliz">$DOLLIZ Token</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── WHAT IS MIP-014 ── -->
+<section id="what">
+  <div class="container">
+    <p class="section-label reveal">/ What is MIP-014</p>
+    <h2 class="reveal">The <span class="g">Onchain Passport</span><br/>for AI Agents</h2>
+
+    <div class="intro-grid">
+      <div class="intro-text reveal">
+        <p>
+          <strong>MIP-014</strong> stands for <em>Metaplex Improvement Proposal #14</em> — the standard that introduces the
+          <strong>Agent Registry</strong> to the Solana blockchain.
+        </p>
+        <p>
+          Think of it like a government passport system, but entirely on-chain and open-source.
+          Each AI agent gets a unique, cryptographically verifiable <strong>identity record</strong>
+          attached to an MPL Core asset.
+        </p>
+        <p>
+          This means any wallet, dApp, or other agent can <strong>look up and trust</strong>
+          an agent's identity without any central authority. It's the foundation for
+          <strong>Agent-to-Agent (A2A) commerce</strong> — autonomous AI transactions between
+          agents that don't require human approval for every step.
+        </p>
+        <p>
+          Metaplex launched MIP-014 with 14 early adopter projects committed to building on
+          this standard — and <strong>IdollyAI is part of that ecosystem</strong>.
+        </p>
+      </div>
+
+      <!-- Passport Card visual -->
+      <div class="passport-card reveal">
+        <div class="card-chip"></div>
+        <h3>AGENT IDENTITY RECORD</h3>
+        <div class="pid">PDA · Solana Mainnet · MPL Core</div>
+
+        <div style="font-size:.8rem; color:var(--muted); margin-bottom: 6px;">Agent Name</div>
+        <div style="font-family:'Orbitron',monospace; color:var(--white); font-size:1rem; margin-bottom:20px;">
+          IDOLLY_AGENT_001
+        </div>
+
+        <div class="id-row">
+          <div><div class="label">Program</div><div class="val">Agent Identity</div></div>
+          <div style="text-align:right"><div class="label">Network</div><div class="val">Solana</div></div>
+        </div>
+        <div class="id-row">
+          <div><div class="label">Standard</div><div class="val">MIP-014</div></div>
+          <div style="text-align:right"><div class="label">Token</div><div class="val" style="color:var(--gold)">$DOLLIZ</div></div>
+        </div>
+        <div class="id-row">
+          <div><div class="label">Status</div><div class="val" style="color:var(--cyan)">● Active</div></div>
+          <div style="text-align:right"><div class="label">Delegation</div><div class="val">Enabled</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how">
+  <div class="container">
+    <p class="section-label reveal">/ How It Works</p>
+    <h2 class="reveal">From Asset to<br/>Autonomous <span class="g">Agent</span></h2>
+
+    <div class="steps">
+      <div class="step active">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Register Agent Identity</h3>
+          <p>A creator calls <code>RegisterIdentityV1</code> with an MPL Core NFT and a registration URI.
+             The Agent Identity program creates a <strong>PDA</strong> (Program Derived Address) tied to that asset,
+             making the agent permanently discoverable on-chain.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Attach AgentIdentity Plugin</h3>
+          <p>The program attaches an <strong>AgentIdentity plugin</strong> to the Core asset with
+             lifecycle hooks for Transfer, Update, and Execute events. This means the agent can
+             now <em>sign transactions and act autonomously</em> — the asset itself becomes a signer.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Create Executive Profile</h3>
+          <p>An executive (a human or another program) registers via <code>RegisterExecutiveV1</code>.
+             This is the entity that will operate the agent — like handing the passport to a trusted pilot.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Delegate Execution</h3>
+          <p>The asset owner calls <code>DelegateExecutionV1</code> to grant the executive permission
+             to act on behalf of the agent. A <strong>delegation record PDA</strong> is created linking
+             the executive to the asset — all on-chain, all auditable.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h3>Agent Acts Autonomously</h3>
+          <p>The agent can now <strong>hold funds, sign transactions, swap tokens, and interact with
+             other agents</strong> — all within the permissions granted. This is the foundation of
+             <em>Agent-to-Agent (A2A) commerce</em> on Solana.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Programs -->
+    <div style="margin-top: 80px;">
+      <p class="section-label reveal">/ The Two Programs</p>
+      <h2 class="reveal">MIP-014 Smart<br/><span class="g">Contracts</span></h2>
+
+      <div class="prog-cards">
+        <div class="prog-card reveal">
+          <span class="tag tag-identity">Agent Identity</span>
+          <h3>Registers & Anchors Identity</h3>
+          <p>Creates the on-chain identity PDA and attaches lifecycle hooks to the MPL Core asset.
+             This is the "issuance" office — it mints the passport.</p>
+          <div class="addr">1DREGFgysWYxLnRnKQnwrxnJQeSMk2HmGaC6whw2B2p</div>
+        </div>
+        <div class="prog-card reveal">
+          <span class="tag tag-tools">Agent Tools</span>
+          <h3>Manages Execution & Delegation</h3>
+          <p>Handles executive profiles and delegation records. This is the "border control" — it
+             decides who's allowed to operate the agent.</p>
+          <div class="addr">TLREGni9ZEyGC3vnPZtqUh95xQ8oPqJSvNjvB7FGK8S</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── IDOLLYAI ── -->
+<section id="idolly">
+  <div class="container">
+    <p class="section-label reveal">/ IdollyAI</p>
+    <h2 class="reveal">Your AI Idol,<br/>Onchain &amp; <span class="g">Alive</span></h2>
+    <p class="reveal" style="color:var(--muted); max-width: 560px; margin-top:16px;">
+      IdollyAI uses the Metaplex ecosystem to mint AI-generated "idol" characters as compressed NFTs
+      on Solana — and MIP-014 gives those idols a real, verifiable identity and autonomy.
+    </p>
+
+    <div class="idolly-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🗜️</div>
+        <h3>Compressed NFTs</h3>
+        <p>IdollyAI uses Metaplex's <strong>Bubblegum program</strong> to mint cNFTs at a fraction of the cost of regular NFTs — storing data efficiently via a Merkle Tree.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⛽</div>
+        <h3>Gas-Free Minting</h3>
+        <p>Thanks to <strong>sponsored transactions</strong>, new members can mint their AI idol without paying any gas fees. Onboarding is seamless for everyone.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔗</div>
+        <h3>Metaplex UMI SDK</h3>
+        <p>The backend uses <code>@metaplex-foundation/umi</code> and Helius RPC nodes for fast, stable Solana connectivity and metadata management via Irys.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🤖</div>
+        <h3>MIP-014 Agent Identity</h3>
+        <p>Each idol can be registered under MIP-014 — giving it an on-chain passport so it can <strong>act, sign, and transact autonomously</strong> on Solana.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💎</div>
+        <h3>$DOLLIZ Economy</h3>
+        <p>Community members earn, spend, and govern with <strong>$DOLLIZ</strong> — the native token of the IdollyAI ecosystem powering rewards and interactions.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌐</div>
+        <h3>A2A Commerce Ready</h3>
+        <p>As MIP-014 matures, IdollyAI agents can interact with other registered agents — enabling AI-driven collaborations, trades, and experiences.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── DOLLIZ TOKEN ── -->
+<section id="dolliz">
+  <div class="container">
+    <p class="section-label reveal">/ The Token</p>
+    <h2 class="reveal">$DOLLIZ —<br/>The <span class="g">Community Currency</span></h2>
+
+    <div class="token-hero reveal">
+      <div>
+        <div class="token-symbol">$DOLLIZ</div>
+        <div class="token-name">idolly.ai · Solana</div>
+        <p style="color:var(--muted); margin-top:20px; max-width:440px; font-size:.92rem;">
+          $DOLLIZ is the native token of the IdollyAI community, built on Solana. It powers
+          the reward system, community interactions, and future governance of the IdollyAI ecosystem —
+          the fuel behind every idol's on-chain journey.
+        </p>
+        <div class="token-stats">
+          <div class="stat-box">
+            <div class="stat-label">Total Supply</div>
+            <div class="stat-val">999.54M</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Network</div>
+            <div class="stat-val">Solana</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Standard</div>
+            <div class="stat-val">SPL Token</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Ecosystem</div>
+            <div class="stat-val">Metaplex</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; flex-shrink:0;">
+        <div style="width:140px; height:140px; border-radius:50%; border: 2px solid var(--gold);
+                    display:flex; align-items:center; justify-content:center;
+                    box-shadow: 0 0 40px rgba(245,196,0,.25), 0 0 80px rgba(245,196,0,.1);
+                    background: radial-gradient(circle, rgba(245,196,0,.12), transparent);
+                    font-size: 4rem; animation: float 4s ease-in-out infinite;">
+          💰
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CONNECTION DIAGRAM ── -->
+<section id="connection">
+  <div class="container">
+    <p class="section-label reveal">/ The Big Picture</p>
+    <h2 class="reveal">How It All<br/><span class="g">Connects</span></h2>
+
+    <div class="conn-diagram reveal">
+      <div class="conn-node">
+        <div class="n-icon">🤖</div>
+        <div class="n-label">Idol NFT</div>
+        <div class="n-sub">MPL Core Asset</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-node conn-highlight">
+        <div class="n-icon">🛂</div>
+        <div class="n-label">MIP-014</div>
+        <div class="n-sub">Agent Registry</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-node">
+        <div class="n-icon">🔑</div>
+        <div class="n-label">Identity PDA</div>
+        <div class="n-sub">On-chain Passport</div>
+      </div>
+      <div class="conn-arrow">→</div>
+      <div class="conn-node conn-gold">
+        <div class="n-icon">💰</div>
+        <div class="n-label">$DOLLIZ</div>
+        <div class="n-sub">Community Token</div>
+      </div>
+    </div>
+
+    <div class="conn-explainer">
+      <div class="conn-item reveal">
+        <h3>🧱 Foundation Layer</h3>
+        <p>Solana + Metaplex provide the infrastructure: fast transactions, low fees, and the MPL Core asset standard that IdollyAI builds on.</p>
+      </div>
+      <div class="conn-item reveal">
+        <h3>🛂 Identity Layer (MIP-014)</h3>
+        <p>The Agent Registry gives each idol a unique on-chain identity, lifecycle hooks, and the ability to delegate execution to authorized parties.</p>
+      </div>
+      <div class="conn-item reveal">
+        <h3>🤖 Agent Layer</h3>
+        <p>With identity registered, idols can act autonomously — signing transactions, holding assets, and eventually trading with other registered agents (A2A).</p>
+      </div>
+      <div class="conn-item reveal">
+        <h3>💎 Community Layer</h3>
+        <p>$DOLLIZ ties the community together — rewarding participation, powering interactions, and aligning incentives across the IdollyAI ecosystem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── GLOSSARY ── -->
+<section id="glossary">
+  <div class="container">
+    <p class="section-label reveal">/ Glossary</p>
+    <h2 class="reveal">Key Terms<br/>for New <span class="g">Members</span></h2>
+
+    <div class="glossary-list">
+      <div class="gterm">
+        <div class="gterm-word">MIP-014</div>
+        <div class="gterm-def"><strong>Metaplex Improvement Proposal #14</strong> — the on-chain agent identity standard for Solana. Defines how AI agents get verified, discoverable identities.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">MPL Core</div>
+        <div class="gterm-def">Metaplex's next-generation NFT standard with a <strong>composable plugin system</strong>. It's what IdollyAI idols are built on.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">PDA</div>
+        <div class="gterm-def"><strong>Program Derived Address</strong> — a special Solana account address generated deterministically from a program's logic. Used to store agent identity records securely.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">cNFT</div>
+        <div class="gterm-def"><strong>Compressed NFT</strong> — NFTs stored using a Merkle Tree, costing up to 99% less than regular NFTs. IdollyAI uses these to let anyone mint for free.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">Delegation</div>
+        <div class="gterm-def">Granting another wallet or program permission to <strong>act on behalf of an agent</strong>. Recorded on-chain via a delegation PDA so it's fully auditable.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">A2A Commerce</div>
+        <div class="gterm-def"><strong>Agent-to-Agent Commerce</strong> — autonomous transactions between AI agents without human intervention. MIP-014 enables this by giving agents trusted identities.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">$DOLLIZ</div>
+        <div class="gterm-def">The <strong>community token</strong> of IdollyAI. An SPL token on Solana used for rewards, interactions, and future governance of the IdollyAI ecosystem.</div>
+      </div>
+      <div class="gterm">
+        <div class="gterm-word">Bubblegum</div>
+        <div class="gterm-def">The Metaplex <strong>compressed NFT program</strong>. IdollyAI uses it to mint idol cNFTs efficiently and affordably using Merkle Trees.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">IDOLLYAI × MIP-014</div>
+  <p>An educational resource for the <strong>IdollyAI Community</strong> · Built on <a href="https://metaplex.com" target="_blank">Metaplex</a> &amp; Solana</p>
+  <p style="margin-top:10px;">$DOLLIZ is not financial advice. This page is for educational purposes only.</p>
+</footer>
+
+<script>
+  // ── Particle canvas background ──
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 1.2 + 0.3;
+      this.vx = (Math.random() - .5) * .3;
+      this.vy = (Math.random() - .5) * .3;
+      this.alpha = Math.random() * .5 + .1;
+      this.color = Math.random() > .7 ? '245,196,0' : '0,245,228';
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.floor(W * H / 12000);
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+  }
+
+  function drawConnections() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,245,228,${.04 * (1 - d/100)})`;
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawConnections();
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  initParticles();
+  loop();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+
+  // ── Scroll reveal ──
+  const revealEls = document.querySelectorAll('.reveal, .step, .feat-card, .gterm');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ── Staggered feat-cards ──
+  const cards = document.querySelectorAll('.feat-card');
+  const cardObs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+  cards.forEach(c => cardObs.observe(c));
+</script>
+</body>
+</html>
